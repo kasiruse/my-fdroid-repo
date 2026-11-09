@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v4
 
       - name: Install F-Droid & Java Dependencies
         run: |
@@ -28,7 +28,7 @@ jobs:
       - name: Download Approved APKs
         run: |
           mkdir -p repo
-          # دانلود یک APK نمونه برای تست ساخت مخزن (میتوانید این لینک را با برنامه دلخواه عوض کنید)
+          # فایل APK تست
           wget -O repo/fdroid-client.apk "https://f-droid.org/F-Droid.apk"
 
       - name: Build F-Droid Index
@@ -39,10 +39,10 @@ jobs:
           fdroid update --create-metadata
 
       - name: Upload Artifact
-        uses: actions/upload-pages-artifact@v3.1.1
+        uses: actions/upload-pages-artifact@v3
         with:
           path: '.'
 
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4.0.5
+        uses: actions/deploy-pages@v4
