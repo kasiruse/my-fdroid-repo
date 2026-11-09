@@ -1,0 +1,49 @@
+name: Update F-Droid Repo
+
+on:
+  schedule:
+    - cron: '0 3 * * 0' # اجرای خودکار هر یکشنبه ساعت ۳ بامداد
+  workflow_dispatch: # امکان اجرای دستی با یک کلیک
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install F-Droid Server
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fdroidserver wget
+
+      - name: Prepare Repo Directory & Download Approved APKs
+        run: |
+          mkdir -p repo
+          # در این بخش لینک مستقیم دانلود APK برنامه‌های مورد تایید خود را وارد کنید
+          # مثال:
+          wget -O repo/fennec_fdroid_1590120.apk "https://f-droid.org/repo/org.mozilla.fennec_fdroid_1590120.apk"
+
+      - name: Build F-Droid Index
+        run: |
+          if [ ! -f "config.yml" ]; then
+            fdroid init --bare
+          fi
+          fdroid update --create-metadata
+
+      - name: Upload Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
