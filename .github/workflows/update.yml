@@ -28,13 +28,13 @@ jobs:
       - name: Download Approved APKs
         run: |
           mkdir -p repo
-          # فایل APK تست
+          # دانلود APK نمونه جهت بیلد مخزن
           wget -O repo/fdroid-client.apk "https://f-droid.org/F-Droid.apk"
 
       - name: Build F-Droid Index
         run: |
           if [ ! -f "config.yml" ]; then
-            fdroid init --bare
+            fdroid init --no-prompt
           fi
           fdroid update --create-metadata
 
